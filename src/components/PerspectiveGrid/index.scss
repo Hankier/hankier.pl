@@ -1,0 +1,59 @@
+/* Perspective Grid Styles */
+.perspective-grid-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100vh; /* Limit height to viewport height */
+  max-height: 800px; /* Set a max height to prevent overflow on larger screens */
+  overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.perspective-grid-container .grid {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  bottom: -20%;
+  transform: rotateX(60deg);
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0) 0%,
+    rgba(245, 158, 11, 0.05) 40%,
+    rgba(245, 158, 11, 0.1) 100%
+  );
+}
+
+.perspective-grid-container .grid-line {
+  position: absolute;
+  background: linear-gradient(90deg, 
+    rgba(245, 158, 11, 0) 0%,
+    rgba(245, 158, 11, 0.3) 50%,
+    rgba(245, 158, 11, 0) 100%
+  );
+}
+
+.perspective-grid-container .grid-line.horizontal {
+  width: 100%;
+  height: 1px;
+  transform: scaleY(0.5);
+  animation: gridPulse 3s infinite;
+}
+
+.perspective-grid-container .grid-line.vertical {
+  width: 1px;
+  height: 100%;
+  transform: scaleX(0.5);
+  animation: gridPulse 3s infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.9;
+  }
+} 
