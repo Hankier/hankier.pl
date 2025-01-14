@@ -10,10 +10,4 @@ services:
       - '13601:13601'
     env_file:
       - .env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
-networks:
-  default:
-    name: hankier-network
-    driver: bridge
+    network_mode: "host"
