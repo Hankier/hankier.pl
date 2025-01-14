@@ -36,6 +36,11 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Create media directory with proper permissions
+RUN mkdir -p /app/public/media && \
+    chown -R nextjs:nodejs /app/public/media && \
+    chmod 755 /app/public/media
+
 COPY --from=builder /app/public ./public
 
 # Set permissions for prerender cache
