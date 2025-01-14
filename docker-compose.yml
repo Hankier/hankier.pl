@@ -8,44 +8,8 @@ services:
     restart: always
     ports:
       - '13601:13601'
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: ["/wait-for-db.sh", "node", "server.js"]
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
-      - PORT=13601
-      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
-      # Add rate limiting for security (as per Payload docs)
-      - RATE_LIMIT_WINDOW=900000  # 15 minutes
-      - RATE_LIMIT_MAX=500
-      - RATE_LIMIT_TRUST_PROXY=true
-
-  postgres:
-    restart: always
-    image: postgres:latest
-    volumes:
-      - /storage/hankier.pl/postgresDB_data:/var/lib/postgresql/data
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   node_modules:
-
-networks:
-  hankier-network:
-    name: hankier-network
-    driver: bridge
