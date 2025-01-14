@@ -16,6 +16,7 @@ import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 import { PricingBlock } from '@/blocks/Pricing/config'
 import { Newsletter } from '@/blocks/Newsletter/config'
 import { Banner } from '@/blocks/Banner/config'
+
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -88,10 +89,10 @@ export const Pages: CollectionConfig<'pages'> = {
                 FormBlock,
                 InfoCard,
                 PricingBlock,
-                Newsletter,
                 Banner,
                 Features,
                 IconDemo,
+                Newsletter,
               ],
               required: true,
               admin: {

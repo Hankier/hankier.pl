@@ -21,6 +21,11 @@ type NewsletterBlockProps = {
   buttonText: string
   successTitle: string
   successMessage: string
+  mailerLiteGroups?: { groupId: string }[]
+  discordNotification?: {
+    enabled: boolean
+    formName: string
+  }
 }
 
 export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
@@ -30,9 +35,12 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
   buttonText = 'Subscribe',
   successTitle,
   successMessage,
+  mailerLiteGroups,
+  discordNotification,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const {
     register,
@@ -50,11 +58,91 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
     }
 
     setIsLoading(true)
+    setError(null)
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Send to MailerLite
+      const response = await fetch('/api/mailerlite/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          name: data.name,
+          groups: mailerLiteGroups?.map((group) => group.groupId) || [],
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('MailerLite subscription error:', errorData)
+
+        // Send detailed error to Discord
+        if (discordNotification?.enabled) {
+          await fetch('/api/discord/webhook', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              Form: discordNotification.formName,
+              Name: data.name,
+              Email: data.email,
+              Status: 'Failed',
+              Error: errorData.error,
+              Details: JSON.stringify(errorData),
+            }),
+          })
+        }
+
+        // Show user-friendly error message
+        setError('Przepraszamy, wystąpił problem. Spróbuj ponownie później.')
+        return
+      }
+
+      // Success webhook notification
+      if (discordNotification?.enabled) {
+        const webhookResponse = await fetch('/api/discord/webhook', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            Form: discordNotification.formName,
+            Name: data.name,
+            Email: data.email,
+            Status: 'Success',
+          }),
+        })
+
+        if (!webhookResponse.ok) {
+          console.error('Discord webhook error:', await webhookResponse.json())
+        }
+      }
+
       setSuccess(true)
     } catch (error) {
-      console.error('Newsletter signup failed:', error)
+      console.error('Newsletter subscription error:', error)
+      setError('Przepraszamy, wystąpił problem. Spróbuj ponownie później.')
+
+      // Send error to Discord
+      if (discordNotification?.enabled) {
+        await fetch('/api/discord/webhook', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            Form: discordNotification.formName,
+            Name: data.name,
+            Email: data.email,
+            Status: 'Failed',
+            Error: error instanceof Error ? error.message : 'Unknown error',
+            Stack: error instanceof Error ? error.stack : undefined,
+          }),
+        })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -100,6 +188,12 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
+              {error && (
+                <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-lg">
+                  <p className="text-rose-500 text-sm">{error}</p>
+                </div>
+              )}
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-zinc-400">
@@ -127,7 +221,7 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
                       required: 'Email jest wymagany',
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Nieprawidłowy adres email',
+                        message: 'Nieprawidłowy format adresu email',
                       },
                     })}
                   />
@@ -139,7 +233,10 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
                 <Checkbox
                   id="terms"
                   className="border-zinc-800 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
-                  {...register('terms', { required: 'Musisz zaakceptować zasady' })}
+                  {...register('terms', {
+                    required: 'Musisz zaakceptować zasady',
+                    validate: (value) => value === true || 'Musisz zaakceptować zasady',
+                  })}
                   onCheckedChange={(checked) => {
                     setValue('terms', checked as boolean, {
                       shouldValidate: true,
@@ -147,7 +244,7 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
                     })
                   }}
                 />
-                <Label htmlFor="terms" className="text-sm text-zinc-400">
+                <Label htmlFor="terms" className="text-xs text-zinc-400">
                   <RichText data={termsText} enableGutter={false} />
                 </Label>
                 {errors.terms && <p className="text-rose-700 text-xs">{errors.terms.message}</p>}
@@ -158,7 +255,7 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
                 disabled={isLoading || Object.keys(errors).length > 0}
                 className="w-full sm:w-auto px-8 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-semibold"
               >
-                {isLoading ? 'Subscribing...' : buttonText}
+                {isLoading ? 'Zapisywanie...' : buttonText}
               </Button>
             </form>
           </div>

@@ -47,12 +47,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
-    'mailer-lite': MailerLiteConfig;
+    'site-config': SiteConfig;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
-    'mailer-lite': MailerLiteSelect<false> | MailerLiteSelect<true>;
+    'site-config': SiteConfigSelect<false> | SiteConfigSelect<true>;
   };
   locale: null;
   user: User & {
@@ -149,7 +149,6 @@ export interface Page {
     | FormBlock
     | InfoCard
     | PricingBlock
-    | NewsletterBlock
     | BannerBlock
     | {
         title?: string | null;
@@ -166,6 +165,7 @@ export interface Page {
         blockType: 'features';
       }
     | IconDemoBlock
+    | NewsletterBlock
   )[];
   meta?: {
     title?: string | null;
@@ -723,6 +723,46 @@ export interface PricingBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  style: 'info' | 'warning' | 'error' | 'success';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconDemoBlock".
+ */
+export interface IconDemoBlock {
+  title: string;
+  description?: string | null;
+  icons: {
+    label: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'iconDemo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "NewsletterBlock".
  */
 export interface NewsletterBlock {
@@ -766,49 +806,13 @@ export interface NewsletterBlock {
         id?: string | null;
       }[]
     | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'newsletter';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
+  discordNotification?: {
+    enabled?: boolean | null;
+    formName?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IconDemoBlock".
- */
-export interface IconDemoBlock {
-  title: string;
-  description?: string | null;
-  icons: {
-    label: string;
-    id?: string | null;
-  }[];
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'iconDemo';
+  blockType: 'newsletter';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1033,7 +1037,6 @@ export interface PagesSelect<T extends boolean = true> {
         formBlock?: T | FormBlockSelect<T>;
         infoCard?: T | InfoCardSelect<T>;
         pricing?: T | PricingBlockSelect<T>;
-        newsletter?: T | NewsletterBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         features?:
           | T
@@ -1053,6 +1056,7 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         iconDemo?: T | IconDemoBlockSelect<T>;
+        newsletter?: T | NewsletterBlockSelect<T>;
       };
   meta?:
     | T
@@ -1195,26 +1199,6 @@ export interface PricingBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "NewsletterBlock_select".
- */
-export interface NewsletterBlockSelect<T extends boolean = true> {
-  title?: T;
-  subtitle?: T;
-  termsText?: T;
-  buttonText?: T;
-  successTitle?: T;
-  successMessage?: T;
-  mailerLiteGroups?:
-    | T
-    | {
-        groupId?: T;
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock_select".
  */
 export interface BannerBlockSelect<T extends boolean = true> {
@@ -1235,6 +1219,32 @@ export interface IconDemoBlockSelect<T extends boolean = true> {
     | {
         label?: T;
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock_select".
+ */
+export interface NewsletterBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  termsText?: T;
+  buttonText?: T;
+  successTitle?: T;
+  successMessage?: T;
+  mailerLiteGroups?:
+    | T
+    | {
+        groupId?: T;
+        id?: T;
+      };
+  discordNotification?:
+    | T
+    | {
+        enabled?: T;
+        formName?: T;
       };
   id?: T;
   blockName?: T;
@@ -1693,11 +1703,12 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mailer-lite".
+ * via the `definition` "site-config".
  */
-export interface MailerLiteConfig {
+export interface SiteConfig {
   id: number;
-  apiKey: string;
+  mailerLiteApiKey: string;
+  discordWebhookUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1749,10 +1760,11 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mailer-lite_select".
+ * via the `definition` "site-config_select".
  */
-export interface MailerLiteSelect<T extends boolean = true> {
-  apiKey?: T;
+export interface SiteConfigSelect<T extends boolean = true> {
+  mailerLiteApiKey?: T;
+  discordWebhookUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

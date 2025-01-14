@@ -70,6 +70,27 @@ export const Newsletter: Block = {
         },
       ],
     },
+    {
+      name: 'discordNotification',
+      type: 'group',
+      fields: [
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          label: 'Enable Discord Notifications',
+          defaultValue: false,
+        },
+        {
+          name: 'formName',
+          type: 'text',
+          label: 'Form Name',
+          admin: {
+            description: 'Name of the form that will appear in Discord notifications',
+            condition: (_, siblingData) => siblingData?.enabled,
+          },
+        },
+      ],
+    },
   ],
   labels: {
     singular: 'Newsletter Block',

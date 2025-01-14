@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { Config } from '@/payload-types'
 
 export async function POST(request: Request) {
   try {
@@ -15,11 +16,11 @@ export async function POST(request: Request) {
     }
 
     const payload = await getPayload({ config: configPromise })
-    const mailerLite = await payload.findGlobal({
-      slug: 'mailer-lite',
-    })
+    const siteConfig = (await payload.findGlobal({
+      slug: 'site-config',
+    })) as Config['globals']['site-config']
 
-    if (!mailerLite?.apiKey) {
+    if (!siteConfig?.mailerLiteApiKey) {
       return NextResponse.json({ error: 'MailerLite API key is not configured' }, { status: 500 })
     }
 
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${mailerLite.apiKey}`,
+        Authorization: `Bearer ${siteConfig.mailerLiteApiKey}`,
       },
       body: JSON.stringify({
         email,
