@@ -44,3 +44,8 @@ services:
 
 volumes:
   node_modules:
+
+networks:
+  hankier-network:
+    name: hankier-network
+    driver: bridge
