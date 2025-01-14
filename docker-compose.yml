@@ -11,7 +11,7 @@ services:
     depends_on:
       - postgres
     env_file:
-      - .env.production
+      - .env
     environment:
       - NODE_ENV=production
       - PORT=13601
@@ -27,7 +27,7 @@ services:
     volumes:
       - /storage/hankier.pl/postgresDB_data:/var/lib/postgresql/data
     env_file:
-      - .env.production
+      - .env
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
