@@ -75,4 +75,4 @@ EXPOSE 13601
 ENV PORT=13601
 
 # Use JSON format for CMD to handle signals properly
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "HOSTNAME=\"0.0.0.0\" node server.js"]
