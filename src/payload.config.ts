@@ -64,6 +64,12 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      ...(process.env.SKIP_DATABASE_CHECK
+        ? {
+            migrate: false,
+            skipMigrations: true,
+          }
+        : {}),
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users, Comments],

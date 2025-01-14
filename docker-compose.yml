@@ -10,8 +10,27 @@ services:
       - '13601:13601'
     env_file:
       - .env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - hankier-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - '13501:5432'
+    volumes:
+      - /storage/hankier.pl/postgresDB_data:/var/lib/postgresql/data
+    networks:
+      - hankier-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payloadAdmin -d payloadDatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   node_modules:
