@@ -10,4 +10,7 @@ services:
       - '13601:13601'
     env_file:
       - .env
-    network_mode: "host"
+    environment:
+      DATABASE_URI: postgresql://payloadAdmin:${POSTGRES_PASSWORD}@host.docker.internal:13501/payloadDatabase
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
