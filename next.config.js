@@ -23,7 +23,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-  staticPageGenerationTimeout: 0,
+  staticPageGenerationTimeout: 120,
 }
 
 export default withPayload(nextConfig)
