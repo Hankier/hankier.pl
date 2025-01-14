@@ -23,6 +23,11 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  experimental: {
+    workerThreads: false,
+    cpus: 1,
+  },
+  staticPageGenerationTimeout: 0,
 }
 
 export default withPayload(nextConfig)
