@@ -46,12 +46,10 @@ export const seed = async ({
       payload.updateGlobal({
         slug: global,
         data: {
-          navItems: [],
+          createdAt: null,
+          updatedAt: null,
         },
         depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
       }),
     ),
   )
@@ -313,16 +311,6 @@ export const seed = async ({
               type: 'custom',
               label: 'Posts',
               url: '/posts',
-            },
-          },
-          {
-            link: {
-              type: 'reference',
-              label: 'Contact',
-              reference: {
-                relationTo: 'pages',
-                value: contactPage.id,
-              },
             },
           },
         ],

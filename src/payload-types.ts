@@ -147,8 +147,6 @@ export interface Page {
     | MediaBlock
     | ArchiveBlock
     | FormBlock
-    | InfoCard
-    | PricingBlock
     | BannerBlock
     | {
         title?: string | null;
@@ -680,49 +678,6 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Info Card".
- */
-export interface InfoCard {
-  headline: string;
-  subHeadline: string;
-  image: number | Media;
-  imagePosition: 'left' | 'right';
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'infoCard';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PricingBlock".
- */
-export interface PricingBlock {
-  title: string;
-  subtitle?: string | null;
-  yearlyDiscount?: number | null;
-  priceCards?:
-    | {
-        title: string;
-        monthlyPrice: number;
-        yearlyPrice: number;
-        subtitle: string;
-        isPopular?: boolean | null;
-        features?:
-          | {
-              feature: string;
-              id?: string | null;
-            }[]
-          | null;
-        buttonText?: string | null;
-        buttonLink: string;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'pricing';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock".
  */
 export interface BannerBlock {
@@ -1035,8 +990,6 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
-        infoCard?: T | InfoCardSelect<T>;
-        pricing?: T | PricingBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         features?:
           | T
@@ -1153,47 +1106,6 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Info Card_select".
- */
-export interface InfoCardSelect {
-  headline?: boolean;
-  subHeadline?: boolean;
-  image?: boolean;
-  imagePosition?: boolean;
-  id?: boolean;
-  blockName?: boolean;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PricingBlock_select".
- */
-export interface PricingBlockSelect<T extends boolean = true> {
-  title?: T;
-  subtitle?: T;
-  yearlyDiscount?: T;
-  priceCards?:
-    | T
-    | {
-        title?: T;
-        monthlyPrice?: T;
-        yearlyPrice?: T;
-        subtitle?: T;
-        isPopular?: T;
-        features?:
-          | T
-          | {
-              feature?: T;
-              id?: T;
-            };
-        buttonText?: T;
-        buttonLink?: T;
-        id?: T;
-      };
   id?: T;
   blockName?: T;
 }

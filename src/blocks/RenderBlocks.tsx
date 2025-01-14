@@ -7,8 +7,6 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
-import { InfoCard } from '@/blocks/InfoCard/Component'
-import { PricingBlock } from '@/blocks/Pricing/Component'
 import { NewsletterBlock } from '@/blocks/Newsletter/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { FeaturesBlock } from '@/blocks/Features/Component'
@@ -21,8 +19,6 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
-  infoCard: InfoCard,
-  pricing: PricingBlock,
   newsletter: NewsletterBlock,
   features: FeaturesBlock,
   iconDemo: IconDemoBlock,

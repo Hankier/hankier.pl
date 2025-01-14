@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 
-import { InfoCard } from '@/blocks/InfoCard/config'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
@@ -13,7 +12,6 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
-import { PricingBlock } from '@/blocks/Pricing/config'
 import { Newsletter } from '@/blocks/Newsletter/config'
 import { Banner } from '@/blocks/Banner/config'
 
@@ -87,8 +85,6 @@ export const Pages: CollectionConfig<'pages'> = {
                 MediaBlock,
                 Archive,
                 FormBlock,
-                InfoCard,
-                PricingBlock,
                 Banner,
                 Features,
                 IconDemo,
