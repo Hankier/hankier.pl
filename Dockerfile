@@ -7,6 +7,15 @@ FROM node:18-alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
+
+# Create wait-for-db script
+RUN echo '#!/bin/sh\n\
+while ! pg_isready -h postgres -p 5432 -U ${POSTGRES_USER}; do\n\
+  echo "Waiting for postgres...";\n\
+  sleep 2;\n\
+done\n\
+exec "$@"' > /wait-for-db.sh && chmod +x /wait-for-db.sh
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager

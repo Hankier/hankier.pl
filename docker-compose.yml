@@ -9,7 +9,9 @@ services:
     ports:
       - '13601:13601'
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    command: ["/wait-for-db.sh", "node", "server.js"]
     env_file:
       - .env
     environment:
