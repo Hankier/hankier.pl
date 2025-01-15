@@ -35,6 +35,11 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    upload: {
+      limits: {
+        fileSize: 5000000, // 5MB, written in bytes
+      },
+    },
     user: Users.slug,
     livePreview: {
       breakpoints: [

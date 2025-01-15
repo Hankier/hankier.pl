@@ -12,4 +12,6 @@ services:
       - .env
     environment:
       DATABASE_URI: postgresql://payloadAdmin:${POSTGRES_PASSWORD}@172.17.0.1:13501/payloadDatabase
+    volumes:
+      - /storage/hankier.pl/payload_media:/app/public/media
     network_mode: "bridge"
