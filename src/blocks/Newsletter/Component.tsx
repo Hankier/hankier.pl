@@ -244,8 +244,10 @@ export const NewsletterBlock: React.FC<NewsletterBlockProps> = ({
                     })
                   }}
                 />
-                <Label htmlFor="terms" className="text-xs text-zinc-400">
-                  <RichText data={termsText} enableGutter={false} />
+                <Label htmlFor="terms" className="text-zinc-400/70">
+                  <div className="[&_p]:text-[10px] [&_p]:leading-tight [&_a]:text-[10px] [&_a]:leading-tight">
+                    <RichText data={termsText} enableGutter={false} />
+                  </div>
                 </Label>
                 {errors.terms && <p className="text-rose-700 text-xs">{errors.terms.message}</p>}
               </div>
